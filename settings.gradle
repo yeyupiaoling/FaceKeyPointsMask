@@ -1,0 +1,3 @@
+include ':ai'
+include ':app'
+rootProject.name = "FaceKeyPoints"
