@@ -26,7 +26,6 @@ import java.util.List;
 
 public class Utils {
     private static final String TAG = Utils.class.getName();
-    private float scale;
 
 
     // 获取最优的预览图片大小
@@ -172,63 +171,6 @@ public class Utils {
             cursor.close();
         }
         return result;
-    }
-
-
-    // 获取中心人脸
-    public static float[] getCenterFace(List<float[]> faces, int width, int height) {
-        float[] centerFace = faces.get(0);
-        float r1 = centerFace[0] + (centerFace[2] - centerFace[0]) / 2;
-        float r2 = centerFace[1] + (centerFace[3] - centerFace[1]) / 2;
-        float w = width / 2.0f;
-        float h = height / 2.0f;
-        float l = (float) ((float) Math.sqrt(r1 - w) + Math.sqrt(r2 - h));
-        for (float[] face : faces) {
-            r1 = face[0] + (face[2] - face[0]) / 2;
-            r2 = face[1] + (face[3] - face[1]) / 2;
-            float l1 = (float) ((float) Math.sqrt(r1 - w) + Math.sqrt(r2 - h));
-            if (l1 < l) {
-                centerFace = face;
-                l = l1;
-            }
-        }
-        return centerFace;
-    }
-
-
-    // 裁剪图片，并扩大一点点
-    public static Bitmap cropImage(float[] centerFace, Bitmap bitmap){
-        int cropWidth = (int) (centerFace[2] - centerFace[0]);
-        int cropHeight = (int) (centerFace[3] - centerFace[1]);
-        int cropLeft = (int) centerFace[0] - cropWidth / 2;
-        int cropTop = (int) centerFace[1] - cropHeight / 4;
-        cropWidth = cropWidth * 2;
-        cropHeight = (int) (cropHeight * 1.5);
-
-        if (cropLeft < 0 || cropTop < 0) {
-            return null;
-        }
-        if ((cropWidth + cropLeft) > bitmap.getWidth() || (cropHeight + cropTop) > bitmap.getHeight()) {
-            return null;
-        }
-        if (cropWidth > cropHeight) {
-            int d = (cropWidth - cropHeight) / 2;
-            cropLeft = cropLeft + d;
-            cropWidth = cropWidth - 2 * d;
-        } else {
-            int d = (cropHeight - cropWidth) / 2;
-            cropTop = cropTop + d;
-            cropHeight = cropHeight - 2 * d;
-        }
-        return Bitmap.createBitmap(bitmap, cropLeft, cropTop, cropWidth, cropHeight, null, false);
-    }
-
-    // 裁剪中间部分的图片
-    public static Bitmap cropCenterImage(Bitmap bitmap){
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        int cropWidth = width / 3;
-        return Bitmap.createBitmap(bitmap, cropWidth, 0, cropWidth, height, null, false);
     }
 
     // 压缩大小

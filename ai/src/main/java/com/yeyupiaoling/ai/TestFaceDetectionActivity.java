@@ -1,9 +1,7 @@
 package com.yeyupiaoling.ai;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
@@ -24,23 +22,19 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Size;
-import android.view.Gravity;
 import android.view.Surface;
 import android.view.TextureView;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.yeyupiaoling.ai.view.AutoFitTextureView;
-import java.io.ByteArrayOutputStream;
+
 import java.util.Arrays;
 
 public class TestFaceDetectionActivity extends AppCompatActivity {
     private static final String TAG = TestFaceDetectionActivity.class.getName();
-    public static final String HEAD_PORTRAIT = "headPortrait";
     private CameraCaptureSession mCaptureSession;
     private CameraDevice mCameraDevice;
 
@@ -60,7 +54,6 @@ public class TestFaceDetectionActivity extends AppCompatActivity {
     private final Object lock = new Object();
     private boolean runClassifier = false;
     private boolean isInfer = true;
-    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,22 +97,25 @@ public class TestFaceDetectionActivity extends AppCompatActivity {
         Bitmap bitmap = mTextureView.getBitmap();
         try {
             long start = System.currentTimeMillis();
-            int result = FaceDetectionUtil.getInstance(TestFaceDetectionActivity.this).predictImage(bitmap);
+            final Face[] result = FaceDetectionUtil.getInstance(TestFaceDetectionActivity.this).predictImage(bitmap);
             long end = System.currentTimeMillis();
             Log.d(TAG, "预测时间：" + (end - start) + "ms");
-            Log.d(TAG, String.valueOf(result));
-            if (result == FaceDetectionUtil.OK) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (result != null && result.length > 0) {
+                            Bitmap b = Utils.drawBitmap(FaceDetectionUtil.getInstance(TestFaceDetectionActivity.this).getBitmap(), result);
+                            imageView.setImageBitmap(b);
+                        }else {
                             imageView.setImageBitmap(FaceDetectionUtil.getInstance(TestFaceDetectionActivity.this).getBitmap());
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                });
-            }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

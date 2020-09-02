@@ -1,17 +1,3 @@
-// Copyright (c) 2019 PaddlePaddle Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 #include "Native.h"
 #include "Pipeline.h"
 
@@ -100,34 +86,6 @@ Java_com_yeyupiaoling_ai_PaddleNative_nativeProcess(
         return nullptr;
     }
 
-//    int size = (int)faces.size() * 142;
-//    jfloatArray result;
-//    jfloat fill[size];
-//    result = (*env).NewFloatArray(size);
-//    for (int i = 0; i < faces.size(); ++i) {
-//        cv::Rect roi = faces[i].roi;
-//        fill[i * 6] = roi.x;
-//        fill[i * 6 + 1] = roi.y;
-//        fill[i * 6 + 2] = roi.width;
-//        fill[i * 6 + 3] = roi.height;
-//        fill[i * 6 + 4] = faces[i].classid;
-//        fill[i * 6 + 5] = faces[i].confidence;
-//        for (int j = 0; j < faces[i].keypoints.size(); ++j) {
-//            fill[i * 6 + 6 + j * 2] = faces[0].keypoints[j].x;
-//            fill[i * 6 + 6 + j * 2 + 1] = faces[0].keypoints[j].y;
-//        }
-//    }
-//
-//    if (result == nullptr) {
-//        return nullptr;
-//    }
-//
-//    (*env).SetFloatArrayRegion(result, 0, size, fill);
-
-
-
-
-
     jobjectArray MXArray = nullptr;       // jobjectArray 为指针类型
     jclass clsMX = nullptr;              // jclass 为指针类型
     jobject obj;
@@ -180,11 +138,6 @@ Java_com_yeyupiaoling_ai_PaddleNative_nativeProcess(
         env->SetObjectArrayElement(MXArray, i, obj);
     }
     return MXArray;
-
-
-
-
-//    return result;
 }
 
 

@@ -10,15 +10,8 @@ import java.io.FileInputStream;
 
 public class FaceDetectionUtil {
     private static final String TAG = FaceDetectionUtil.class.getName();
-    public static final int OK = 0;
-    public static final int MASK = 1001;
-    public static final int SIDE_FACE = 1002;
-    public static final int NO_FACE = 1003;
-    public static final int MUCH_FACE = 1004;
     // 缩放大小
     private static final int maxSize = 700;
-    // 侧脸的最大限制倍数
-    private static final int distDiff = 3;
     private static final int NUM_THREADS = 4;
     private static final float FD_INPUT_SCALE = 0.25f;
     private static final float[] FD_INPUT_MEAN = new float[]{0.407843f, 0.694118f, 0.482353f};
@@ -29,9 +22,9 @@ public class FaceDetectionUtil {
     private static final float[] MCL_INPUT_MEAN = new float[]{0.5f, 0.5f, 0.5f};
     private static final float[] MCL_INPUT_STD = new float[]{1.0f, 1.0f, 1.0f};
     private static FaceDetectionUtil faceDetectionUtil;
-    private Bitmap resultBitmap;
+    private Bitmap predictBitmap;
 
-    PaddleNative predictor = new PaddleNative();
+    private PaddleNative predictor = new PaddleNative();
 
     public static FaceDetectionUtil getInstance(Context context) throws Exception {
         if (faceDetectionUtil == null) {
@@ -79,7 +72,7 @@ public class FaceDetectionUtil {
         Log.e(TAG, "模型加载情况：" + loadResult);
     }
 
-    public int predictImage(String image_path) throws Exception {
+    public Face[] predictImage(String image_path) throws Exception {
         if (!new File(image_path).exists()) {
             throw new Exception("image file is not exists!");
         }
@@ -88,77 +81,24 @@ public class FaceDetectionUtil {
         return predictImage(bitmap);
     }
 
-    public int predictImage(Bitmap bitmap) throws Exception {
+    public Face[] predictImage(Bitmap bitmap) throws Exception {
         return predict(bitmap);
     }
 
 
     // 执行预测
-    private int predict(Bitmap bmp) throws Exception {
-        resultBitmap = null;
-//        Bitmap predictBitmap = Utils.cropCenterImage(bmp);
-        Bitmap predictBitmap = Utils.getScaleBitmap(bmp, maxSize);
+    private Face[] predict(Bitmap bmp) throws Exception {
+        predictBitmap = Utils.getScaleBitmap(bmp, maxSize);
         recycle(bmp);
         long start = System.currentTimeMillis();
         Face[] faces = predictor.process(predictBitmap);
         long end = System.currentTimeMillis();
         Log.d(TAG, "单纯预测时间：" + (end - start));
-
-        if (faces == null || faces.length == 0) {
-            return NO_FACE;
-        } else if (faces.length > 140) {
-            return MUCH_FACE;
-        } else {
-            if (isMask(faces[0])) {
-                return MASK;
-            } else {
-                if (isSideFace(faces[0])) {
-                    return SIDE_FACE;
-                } else {
-                    resultBitmap = Utils.drawBitmap(predictBitmap, faces);
-                    return OK;
-                }
-            }
-        }
-    }
-
-    // 判断是否侧脸
-    private boolean isSideFace(Face face) {
-//        float left = face.roi[0];
-//        float top = face.roi[1];
-//        float right = face.roi[2] + face.roi[0];
-//        float bottom = face.roi[3] + face.roi[1];
-//        for (int i = 0; i < face.keypoints.length; i = i + 2) {
-//            float x = face.keypoints[i];
-//            float y = face.keypoints[i + 1];
-//            if (x < left || x > right || y < top || y > bottom) {
-//                Log.d(TAG, "侧脸1");
-//                return true;
-//            }
-//        }
-//
-//        float mouth1 = face.keypoints[94];
-//        float mouth2 = face.keypoints[96];
-//        float face1 = face.keypoints[6];
-//        float face2 = face.keypoints[22];
-//        float dist1 = mouth1 - face1;
-//        float dist2 = face2 - mouth2;
-//
-//        if (dist1 * distDiff < dist2 || dist2 * distDiff < dist1) {
-//            Log.d(TAG, "侧脸2");
-//            return true;
-//        }
-        return false;
-    }
-
-    private boolean isMask(Face face) {
-        return false;
-//        int label = (int) face[4];
-//        return label == 1;
+        return faces;
     }
 
     public Bitmap getBitmap() {
-        return resultBitmap;
+        return predictBitmap;
     }
 
     // 销毁无用的Bitmap
