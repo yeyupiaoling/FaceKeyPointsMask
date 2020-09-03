@@ -107,8 +107,8 @@ Java_com_yeyupiaoling_ai_PaddleNative_nativeProcess(
     //得到这个类的构造方法id.  //得到类的默认构造方法的id.都这样写.
     jmethodID consID = (env)->GetMethodID(clsMX, "<init>", "()V");
 
-    obj = env->NewObject(clsMX, consID);
     for (jint i = 0; i < len; i++) {
+        obj = env->NewObject(clsMX, consID);
         cv::Rect roi1 = faces[i].roi;
         float confidence1 = faces[i].confidence;
         int classid1 = faces[i].classid;
