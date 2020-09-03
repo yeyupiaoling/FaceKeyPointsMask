@@ -203,6 +203,11 @@ public class Utils {
         paint1.setColor(Color.RED);
         paint1.setStyle(Paint.Style.STROKE);
         paint1.setStrokeWidth(3);
+        Paint paint2 = new Paint();
+        paint2.setColor(Color.CYAN);
+        paint2.setStyle(Paint.Style.STROKE);
+        paint2.setTextSize(22);
+        paint2.setStrokeWidth(1);
 
         for (Face face : faces) {
             left = (int) (face.roi[0]);
@@ -214,6 +219,12 @@ public class Utils {
 
             for (int j = 0; j < face.keypoints.length; j = j + 2) {
                 canvas.drawText(String.valueOf(j / 2), face.keypoints[j], face.keypoints[j + 1], paint);
+            }
+
+            if (face.classid == 1){
+                canvas.drawText("戴口罩", left, top, paint2);
+            }else {
+                canvas.drawText("未戴口罩", left, top, paint2);
             }
         }
         return bitmap;
