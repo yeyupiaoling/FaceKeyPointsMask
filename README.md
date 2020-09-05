@@ -1,5 +1,9 @@
 # FaceKeyPointsMask
-人脸检测、口罩识别、关键检测
+
+> 原文博客：[Doi技术团队](http://blog.doiduoyi.com)<br/><br/>
+> 链接地址：[https://blog.doiduoyi.com/authors/1584446358138](https://blog.doiduoyi.com/authors/1584446358138)<br/>
+> 初心：记录优秀的Doi技术团队学习经历<br/>
+>本文链接：[一行代码Android上实现人脸检测、关键点检测、口罩检测](https://blog.doiduoyi.com/articles/1599278607082.html)<br/>
 
 
 一行代码实现人脸检测，人脸关键点检测和戴口罩检测。
