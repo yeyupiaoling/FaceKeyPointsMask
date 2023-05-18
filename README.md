@@ -1,10 +1,5 @@
 # FaceKeyPointsMask
 
-> 原文博客：[Doi技术团队](http://blog.doiduoyi.com)<br/><br/>
-> 链接地址：[https://blog.doiduoyi.com/authors/1584446358138](https://blog.doiduoyi.com/authors/1584446358138)<br/>
-> 初心：记录优秀的Doi技术团队学习经历<br/>
->本文链接：[一行代码Android上实现人脸检测、关键点检测、口罩检测](https://blog.doiduoyi.com/articles/1599278607082.html)<br/>
-
 
 一行代码实现人脸检测，人脸关键点检测和戴口罩检测。
 ```java
@@ -12,8 +7,6 @@ Face[] result = FaceDetectionUtil.getInstance(MainActivity.this).predictImage(bi
 ```
 
 本项目是使用Paddle Lite 的C++实现的人脸检测，人脸关键点检测和戴口罩检测，并将编译好的动态库和静态库部署在Android应用上，在Android设备上实现人脸检测，人脸关键点检测和戴口罩检测，所以本应不会使用到C++开发，可以只使用笔者提供的JNI接口实现这些功能。在`ai`这个module是笔者在开发时使用到的，读者在使用这个项目时，完全可以删除掉，如果是看C++实现，也可以看这个module的源码。
-
-**源码地址：[https://github.com/yeyupiaoling/FaceKeyPointsMask](https://github.com/yeyupiaoling/FaceKeyPointsMask)**
 
 # Android开发
 `assets`目录是存放各个模型的文件，`pyramidbox.nb`模式是人脸检测，首先第一步是需要检查人脸才能进行下一步的识别。`facekeypoints.nb`这个是人脸关键点检测，检测到人脸之后，通过这个模型检测人脸关键点。`maskclassifier.nb`这个模型是口罩分类模型，检测到人脸之后，用这个识别是否戴口罩。第一步笔者再训练一个性别分类和年龄模型，这样一个程序就可以同时实现人脸检测，人脸关键点检测、戴口罩检测和性别年龄识别等5个功能。
